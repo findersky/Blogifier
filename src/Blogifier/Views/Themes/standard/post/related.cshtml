@@ -1,0 +1,52 @@
+@using Blogifier.Shared
+<!--
+    TODO:
+    List of related posts.
+
+    Custom Fields:
+    - on or off
+    - Title (Related Posts)
+    - How many items
+ -->
+<div class="container">
+    <section class="related">
+        <header class="related-header">
+            <h3 class="related-header-title">Related Posts</h4>
+            <a class="related-header-link ms-auto" href="~/">
+                View All
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                </svg>
+            </a>
+        </header>
+        <div class="row row-cols-3 g-4">
+            <!-- item -->
+            <div class="col">
+                <article class="post-card-item">
+                    <img class="post-card-cover" src="https://source.unsplash.com/300x350/?laptop" alt="title">
+                    <time class="post-card-date">Jan 27, 2021</time>
+                    <h4 class="post-card-title"><a class="post-card-link" href="#">The Post Title Goes Here</a></h4>
+                </article>
+            </div>
+            <!--/item -->
+            <!-- item -->
+            <div class="col">
+                <article class="post-card-item">
+                    <img class="post-card-cover" src="https://source.unsplash.com/300x350/?typing" alt="title">
+                    <time class="post-card-date">Jan 27, 2021</time>
+                    <h4 class="post-card-title"><a class="post-card-link" href="#">The Post Title Goes Here</a></h4>
+                </article>
+            </div>
+            <!--/item -->
+            <!-- item -->
+            <div class="col">
+                <article class="post-card-item">
+                    <img class="post-card-cover" src="https://source.unsplash.com/300x350/?desk" alt="title">
+                    <time class="post-card-date">Jan 27, 2021</time>
+                    <h4 class="post-card-title"><a class="post-card-link" href="#">The Post Title Goes Here</a></h4>
+                </article>
+            </div>
+            <!--/item -->
+        </div>
+    </section>
+</div>
