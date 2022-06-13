@@ -1,26 +1,28 @@
-﻿@inject HttpClient _http
+@inject HttpClient _http
 @inject IStringLocalizer<Resource> _localizer
 
 @if (_model != null)
 {
-	<div class="dashboard-widget d-flex">
-		<div class="dashboard-widget-card dashboard-stats-item">
-			<span class="dashboard-stats-number">@_model.TotalPosts</span>
-			<span class="dashboard-stats-title">@_localizer["posts"]</span>
-		</div>
-		<div class="dashboard-widget-card dashboard-stats-item">
-			<span class="dashboard-stats-number">0</span>
-			<span class="dashboard-stats-title">@_localizer["pages"]</span>
-		</div>
-		<div class="dashboard-widget-card dashboard-stats-item">
-			<span class="dashboard-stats-number">@_model.TotalViews</span>
-			<span class="dashboard-stats-title">@_localizer["views"]</span>
-		</div>
-		<div class="dashboard-widget-card dashboard-stats-item">
-			<span class="dashboard-stats-number">@_model.TotalSubscribers</span>
-			<span class="dashboard-stats-title">@_localizer["subscribers"]</span>
-		</div>
-	</div>
+     <div class="row">
+        <div class="col-4">
+            <a class="dash-widget dash-link dash-stats" href="/admin/blog/">
+                <span class="dash-stats-value">@_model.TotalPosts</span>
+                <span class="dash-stats-name">@_localizer["posts"]</span>
+            </a>
+        </div>
+        <div class="col-4">
+            <a class="dash-widget dash-link dash-stats" href="/admin/pages/">
+                <span class="dash-stats-value">@_model.TotalPages</span>
+                <span class="dash-stats-name">@_localizer["pages"]</span>
+            </a>
+        </div>
+        <div class="col-4">
+            <a class="dash-widget dash-link dash-stats" href="/admin/newsletter/subscribers/">
+                <span class="dash-stats-value">@_model.TotalSubscribers</span>
+                <span class="dash-stats-name">@_localizer["subscribers"]</span>
+            </a>
+        </div>
+    </div>
 }
 
 @code {

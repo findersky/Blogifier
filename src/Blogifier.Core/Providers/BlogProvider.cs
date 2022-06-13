@@ -35,10 +35,13 @@ namespace Blogifier.Core.Providers
 				Title = blog.Title,
 				Description = blog.Description,
 				Theme = blog.Theme,
+                IncludeFeatured = blog.IncludeFeatured,
 				ItemsPerPage = blog.ItemsPerPage,
 				SocialFields = new List<SocialField>(),
 				Cover = string.IsNullOrEmpty(blog.Cover) ? blog.Cover : Constants.DefaultCover,
 				Logo = string.IsNullOrEmpty(blog.Logo) ? blog.Logo : Constants.DefaultLogo,
+                HeaderScript = blog.HeaderScript,
+                FooterScript = blog.FooterScript,
 				values = await GetValues(blog.Theme)
 			};
 		}
@@ -64,6 +67,10 @@ namespace Blogifier.Core.Providers
 			existing.Theme = blog.Theme;
 			existing.Cover = blog.Cover;
 			existing.Logo = blog.Logo;
+            existing.HeaderScript = blog.HeaderScript;
+            existing.FooterScript = blog.FooterScript;
+            existing.AnalyticsListType = blog.AnalyticsListType;
+            existing.AnalyticsPeriod = blog.AnalyticsPeriod;
 
 			return await _db.SaveChangesAsync() > 0;
 		}

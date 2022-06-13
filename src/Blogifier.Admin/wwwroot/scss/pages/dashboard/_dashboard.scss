@@ -1,9 +1,0 @@
-﻿.dashboard {
-  &-widget {
-    margin-bottom: 2rem;
-
-    &-card {
-      @include bf-card(0.5rem);
-    }
-  }
-}

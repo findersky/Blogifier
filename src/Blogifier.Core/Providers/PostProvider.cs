@@ -1,7 +1,9 @@
 using Blogifier.Core.Data;
 using Blogifier.Core.Extensions;
 using Blogifier.Shared;
+using Blogifier.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,11 +35,13 @@ namespace Blogifier.Core.Providers
 	{
 		private readonly AppDbContext _db;
         private readonly ICategoryProvider _categoryProvider;
+        private readonly IConfiguration _configuration;
 
-		public PostProvider(AppDbContext db, ICategoryProvider categoryProvider)
+        public PostProvider(AppDbContext db, ICategoryProvider categoryProvider, IConfiguration configuration)
 		{
 			_db = db;
             _categoryProvider = categoryProvider;
+            _configuration = configuration;
 		}
 
 		public async Task<List<Post>> GetPosts(PublishedStatus filter, PostType postType)
@@ -68,21 +72,23 @@ namespace Blogifier.Core.Providers
 
 		public async Task<IEnumerable<PostItem>> Search(Pager pager, string term, int author = 0, string include = "", bool sanitize = false)
 		{
-			var skip = pager.CurrentPage * pager.ItemsPerPage - pager.ItemsPerPage;
+            term = term.ToLower();
+            var skip = pager.CurrentPage * pager.ItemsPerPage - pager.ItemsPerPage;
 
 			var results = new List<SearchResult>();
 			var termList = term.ToLower().Split(' ').ToList();
+            var categories = await _db.Categories.ToListAsync();
 
 			foreach (var p in GetPosts(include, author))
 			{
 				var rank = 0;
 				var hits = 0;
-				term = term.ToLower();
-
+				
 				foreach (var termItem in termList)
 				{
 					if (termItem.Length < 4 && rank > 0) continue;
 
+                    //var postCategories = categories.Where(c => c.)
 					if (p.PostCategories != null && p.PostCategories.Count > 0)
 					{
                         foreach (var pc in p.PostCategories)
@@ -167,7 +173,9 @@ namespace Blogifier.Core.Providers
             var post = _db.Posts.Single(p => p.Slug == slug);
             post.PostViews++;
             await _db.SaveChangesAsync();
-            // await SaveStatsTotals(post.Id);
+
+            model.Related = await Search(new Pager(1), model.Post.Title, 0, "PF", true);
+            model.Related = model.Related.Where(r => r.Id != model.Post.Id).ToList();
 
             return await Task.FromResult(model);
         }
@@ -227,6 +235,10 @@ namespace Blogifier.Core.Providers
 			post.Blog = _db.Blogs.First();
 			post.DateCreated = DateTime.UtcNow;
 
+            // sanitize HTML fields
+            post.Content = post.Content.RemoveScriptTags();
+            post.Description = post.Description.RemoveScriptTags();
+
 			await _db.Posts.AddAsync(post);
 			return await _db.SaveChangesAsync() > 0;
 		}
@@ -239,8 +251,8 @@ namespace Blogifier.Core.Providers
 
 			existing.Slug = post.Slug;
 			existing.Title = post.Title;
-			existing.Description = post.Description;
-			existing.Content = post.Content;
+			existing.Description = post.Description.RemoveScriptTags();
+			existing.Content = post.Content.RemoveScriptTags();
 			existing.Cover = post.Cover;
 			existing.PostType = post.PostType;
 			existing.Published = post.Published;
@@ -350,6 +362,7 @@ namespace Blogifier.Core.Providers
 			var post = new PostItem
 			{
 				Id = p.Id,
+                PostType = p.PostType,
 				Slug = p.Slug,
 				Title = p.Title,
 				Description = p.Description,
@@ -408,6 +421,11 @@ namespace Blogifier.Core.Providers
 
 			return items;
 		}
+
+        bool IsDemo()
+        {
+            return _configuration.GetSection("Blogifier").GetValue<bool>("DemoMode");
+        }
 
 		#endregion
 	}
